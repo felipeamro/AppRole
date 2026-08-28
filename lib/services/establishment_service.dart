@@ -5,10 +5,11 @@ import 'firestore_paths.dart';
 
 /// Operacoes sobre a colecao `establishments`.
 class EstablishmentService {
-  EstablishmentService({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  EstablishmentService({FirebaseFirestore? firestore}) : _injectedFirestore = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _injectedFirestore;
+
+  FirebaseFirestore get _firestore => _injectedFirestore ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _collection =>
       _firestore.collection(FirestorePaths.establishments);

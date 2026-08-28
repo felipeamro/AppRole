@@ -46,7 +46,7 @@ class NewsStoryCard extends StatelessWidget {
                 child: Image.network(
                   news.mediaUrl!,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(color: color.withOpacity(0.15)),
+                  errorBuilder: (_, __, ___) => Container(color: color.withValues(alpha: 0.15)),
                 ),
               ),
             Padding(
@@ -62,7 +62,7 @@ class NewsStoryCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: color.withOpacity(0.15),
+                          color: color.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
