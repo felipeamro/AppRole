@@ -1,0 +1,32 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+*.lock
+!pubspec.lock
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Platform folders (generated with `flutter create .`)
+/android/
+/ios/
+/web/
+/linux/
+/macos/
+/windows/
+
+# Firebase (nunca versionar credenciais reais)
+lib/firebase_options_real.dart
+google-services.json
+GoogleService-Info.plist
+firebase.json
+.firebaserc
+
+# Misc
+.DS_Store
+*.log

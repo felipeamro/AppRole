@@ -1,0 +1,32 @@
+name: ivibe
+description: "iVibe - crowdsourcing de vida noturna, restaurantes, rotas seguras e feed de noticias hyperlocal."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Firebase
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
+  firebase_auth: ^5.3.1
+
+  # Mapas
+  google_maps_flutter: ^2.9.0
+
+  # Utilitarios
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
