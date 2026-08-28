@@ -1,0 +1,73 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+/// Tipo de estabelecimento.
+enum EstablishmentType {
+  balada,
+  restaurante;
+
+  static EstablishmentType fromValue(String? value) {
+    return EstablishmentType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => EstablishmentType.restaurante,
+    );
+  }
+}
+
+/// Documento da colecao `establishments`.
+class Establishment {
+  final String id;
+  final String name;
+  final EstablishmentType type;
+  final double lat;
+  final double lng;
+  final String bairro;
+  final String genreOrCuisine;
+  final int priceRange;
+  final String createdBy;
+  final bool verified;
+
+  const Establishment({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.lat,
+    required this.lng,
+    required this.bairro,
+    required this.genreOrCuisine,
+    required this.priceRange,
+    required this.createdBy,
+    this.verified = false,
+  });
+
+  factory Establishment.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    final data = doc.data() ?? <String, dynamic>{};
+    return Establishment(
+      id: doc.id,
+      name: data['name'] as String? ?? '',
+      type: EstablishmentType.fromValue(data['type'] as String?),
+      lat: (data['lat'] as num?)?.toDouble() ?? 0,
+      lng: (data['lng'] as num?)?.toDouble() ?? 0,
+      bairro: data['bairro'] as String? ?? '',
+      genreOrCuisine: data['genreOrCuisine'] as String? ?? '',
+      priceRange: (data['priceRange'] as num?)?.toInt() ?? 1,
+      createdBy: data['createdBy'] as String? ?? '',
+      verified: data['verified'] as bool? ?? false,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'type': type.name,
+      'lat': lat,
+      'lng': lng,
+      'bairro': bairro,
+      'genreOrCuisine': genreOrCuisine,
+      'priceRange': priceRange,
+      'createdBy': createdBy,
+      'verified': verified,
+    };
+  }
+}
