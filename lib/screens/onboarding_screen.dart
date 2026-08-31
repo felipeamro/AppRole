@@ -4,22 +4,42 @@ import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import 'main_navigation_screen.dart';
 
+/// Uma regiao de bairros exibida na lista do Onboarding (ex: "ABC Paulista").
+class BairroRegiao {
+  const BairroRegiao({required this.nome, required this.bairros});
+
+  final String nome;
+  final List<String> bairros;
+}
+
 /// Primeira tela do app: o usuario escolhe o bairro que quer acompanhar.
 ///
 /// A escolha define o `bairroPreferido` salvo em `users` e filtra os dados
-/// de estabelecimentos e feed exibidos na Home.
+/// de estabelecimentos e feed exibidos na Home. Tambem e reaberta a partir
+/// do Perfil quando o usuario quer trocar de bairro.
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  const OnboardingScreen({super.key, this.currentBairro});
 
-  static const List<String> bairrosDisponiveis = [
-    'Pinheiros',
-    'Vila Madalena',
-    'Itaim Bibi',
-    'Moema',
-    'Vila Olímpia',
-    'Copacabana',
-    'Ipanema',
-    'Savassi',
+  /// Bairro atualmente selecionado, se houver (fluxo de "trocar bairro").
+  final String? currentBairro;
+
+  static const List<BairroRegiao> regioes = [
+    BairroRegiao(
+      nome: 'ABC Paulista',
+      bairros: ['São Bernardo do Campo', 'Santo André', 'São Caetano do Sul'],
+    ),
+    BairroRegiao(
+      nome: 'São Paulo - Zona Sul',
+      bairros: ['Moema', 'Vila Olímpia', 'Itaim Bibi'],
+    ),
+    BairroRegiao(
+      nome: 'São Paulo - Zona Oeste',
+      bairros: ['Pinheiros', 'Vila Madalena'],
+    ),
+    BairroRegiao(
+      nome: 'Rio de Janeiro - Zona Sul',
+      bairros: ['Copacabana', 'Ipanema'],
+    ),
   ];
 
   @override
@@ -30,7 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _authService = AuthService();
   final _userService = UserService();
 
-  String? _selectedBairro;
+  late String? _selectedBairro = widget.currentBairro;
   bool _loading = false;
 
   Future<void> _confirmarBairro() async {
@@ -79,23 +99,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               const SizedBox(height: 24),
               Expanded(
-                child: ListView.separated(
-                  itemCount: OnboardingScreen.bairrosDisponiveis.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final bairro = OnboardingScreen.bairrosDisponiveis[index];
-                    final selected = bairro == _selectedBairro;
-                    return Card(
-                      color: selected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : null,
-                      child: ListTile(
-                        title: Text(bairro),
-                        trailing: selected ? const Icon(Icons.check_circle) : null,
-                        onTap: () => setState(() => _selectedBairro = bairro),
+                child: ListView(
+                  children: [
+                    for (final regiao in OnboardingScreen.regioes) ...[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          regiao.nome,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    );
-                  },
+                      for (final bairro in regiao.bairros)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Card(
+                            color: bairro == _selectedBairro
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : null,
+                            child: ListTile(
+                              title: Text(bairro),
+                              trailing: bairro == _selectedBairro
+                                  ? const Icon(Icons.check_circle)
+                                  : null,
+                              onTap: () => setState(() => _selectedBairro = bairro),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 16),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(height: 16),

@@ -9,6 +9,8 @@ void main() {
     await tester.pumpWidget(const IVibeApp());
 
     expect(find.text('Bem-vindo ao iVibe'), findsOneWidget);
-    expect(find.text('Pinheiros'), findsOneWidget);
+    // A primeira regiao da lista sempre esta visivel sem precisar rolar.
+    expect(find.text('ABC Paulista'), findsOneWidget);
+    expect(find.text('São Bernardo do Campo'), findsOneWidget);
   });
 }
