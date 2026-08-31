@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../models/establishment.dart';
 import '../services/establishment_service.dart';
 import '../widgets/establishment_map_marker.dart';
+import '../widgets/trocar_bairro_action.dart';
 import 'establishment_detail_screen.dart';
 
 /// Tela inicial: mapa do bairro escolhido com pins dos estabelecimentos
@@ -37,7 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final markerFactory = EstablishmentMapMarkerFactory(onTap: _openDetail);
 
     return Scaffold(
-      appBar: AppBar(title: Text('iVibe · ${widget.bairro}')),
+      appBar: AppBar(
+        title: Text('iVibe · ${widget.bairro}'),
+        actions: [TrocarBairroChip(bairroAtual: widget.bairro)],
+      ),
       body: StreamBuilder<List<Establishment>>(
         stream: _establishmentService.watchByBairro(widget.bairro),
         builder: (context, snapshot) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/news_item.dart';
 import '../services/news_service.dart';
 import '../widgets/news_story_card.dart';
+import '../widgets/trocar_bairro_action.dart';
 
 /// Feed de noticias hyperlocal do bairro: eventos, transito, cultura e furos
 /// enviados pela comunidade, em cards estilo stories.
@@ -21,7 +22,10 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Feed · ${widget.bairro}')),
+      appBar: AppBar(
+        title: Text('Feed · ${widget.bairro}'),
+        actions: [TrocarBairroChip(bairroAtual: widget.bairro)],
+      ),
       body: StreamBuilder<List<NewsItem>>(
         stream: _newsService.watchByBairro(widget.bairro),
         builder: (context, snapshot) {
