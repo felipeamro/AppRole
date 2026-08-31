@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/establishment.dart';
 import 'firestore_paths.dart';
@@ -23,7 +24,17 @@ class EstablishmentService {
     return _collection
         .where('bairro', isEqualTo: bairro)
         .snapshots()
-        .map((s) => s.docs.map(Establishment.fromFirestore).toList());
+        .map((s) {
+          final establishments = s.docs.map(Establishment.fromFirestore).toList();
+          // TODO(temporario): remover apos diagnosticar o bug de pins que nao
+          // aparecem no mapa (ver conversa sobre o Liverpool Bar).
+          debugPrint(
+            '[EstablishmentService.watchByBairro] bairro="$bairro" -> '
+            '${establishments.length} documento(s): '
+            '${establishments.map((e) => '${e.name} (lat=${e.lat}, lng=${e.lng}, type=${e.type.name})').join(' | ')}',
+          );
+          return establishments;
+        });
   }
 
   Stream<Establishment?> watchById(String id) {

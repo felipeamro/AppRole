@@ -11,9 +11,13 @@ class EstablishmentMapMarkerFactory {
 
   Set<Marker> build(List<Establishment> establishments) {
     return establishments.map((e) {
-      final hue = e.type == EstablishmentType.balada
-          ? BitmapDescriptor.hueViolet
-          : BitmapDescriptor.hueOrange;
+      // Switch exaustivo: ao adicionar um novo EstablishmentType, o
+      // analisador aponta este `case` como faltando em vez de a cor cair
+      // silenciosamente em "restaurante".
+      final hue = switch (e.type) {
+        EstablishmentType.balada => BitmapDescriptor.hueViolet,
+        EstablishmentType.restaurante => BitmapDescriptor.hueOrange,
+      };
       return Marker(
         markerId: MarkerId(e.id),
         position: LatLng(e.lat, e.lng),

@@ -189,13 +189,7 @@ class _EstablishmentInfo extends StatelessWidget {
           children: [
             Row(
               children: [
-                Chip(
-                  label: Text(
-                    establishment.type == EstablishmentType.balada
-                        ? 'Balada'
-                        : 'Restaurante',
-                  ),
-                ),
+                Chip(label: Text(establishment.type.label)),
                 const SizedBox(width: 8),
                 if (establishment.verified)
                   const Chip(

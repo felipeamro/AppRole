@@ -69,17 +69,15 @@ class _AddEstablishmentSheetState extends State<AddEstablishmentSheet> {
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
+            // Gerado a partir de EstablishmentType.values: um novo tipo no
+            // enum aparece aqui automaticamente, sem editar este arquivo.
             children: [
-              ChoiceChip(
-                label: const Text('Restaurante'),
-                selected: _type == EstablishmentType.restaurante,
-                onSelected: (_) => setState(() => _type = EstablishmentType.restaurante),
-              ),
-              ChoiceChip(
-                label: const Text('Balada'),
-                selected: _type == EstablishmentType.balada,
-                onSelected: (_) => setState(() => _type = EstablishmentType.balada),
-              ),
+              for (final type in EstablishmentType.values)
+                ChoiceChip(
+                  label: Text(type.label),
+                  selected: _type == type,
+                  onSelected: (_) => setState(() => _type = type),
+                ),
             ],
           ),
           const SizedBox(height: 16),
