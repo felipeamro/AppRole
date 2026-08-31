@@ -59,6 +59,19 @@ class _EstablishmentDetailScreenState extends State<EstablishmentDetailScreen> {
     );
   }
 
+  Future<void> _confirmExistence() async {
+    final user = await _authService.ensureSignedIn();
+    await _establishmentService.confirmExistence(
+      establishmentId: widget.establishmentId,
+      userId: user.uid,
+    );
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Confirmação registrada, obrigado!')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +94,14 @@ class _EstablishmentDetailScreenState extends State<EstablishmentDetailScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _EstablishmentInfo(establishment: establishment),
+                    if (!establishment.verified) ...[
+                      const SizedBox(height: 12),
+                      _VerificationStatus(
+                        establishmentId: establishment.id,
+                        establishmentService: _establishmentService,
+                        onConfirm: _confirmExistence,
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     FilledButton.icon(
                       onPressed: _openReportSheet,
@@ -105,6 +126,50 @@ class _EstablishmentDetailScreenState extends State<EstablishmentDetailScreen> {
           );
         },
       ),
+    );
+  }
+}
+
+/// Progresso de verificacao de um local cadastrado pela comunidade: mostra
+/// quantas confirmacoes distintas ja recebeu (de [kVerificationThreshold]
+/// necessarias) e o botao para o usuario atual confirmar que o local existe.
+class _VerificationStatus extends StatelessWidget {
+  const _VerificationStatus({
+    required this.establishmentId,
+    required this.establishmentService,
+    required this.onConfirm,
+  });
+
+  final String establishmentId;
+  final EstablishmentService establishmentService;
+  final VoidCallback onConfirm;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+      stream: establishmentService.watchConfirmationCount(establishmentId),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Ainda não verificado: $count/$kVerificationThreshold '
+                    'confirmações da comunidade.',
+                  ),
+                ),
+                TextButton(
+                  onPressed: onConfirm,
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

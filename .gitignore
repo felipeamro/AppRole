@@ -22,11 +22,11 @@ build/
 android/key.properties
 
 # Firebase (nunca versionar credenciais reais)
+# firebase.json e .firebaserc nao sao segredos (so apontam para
+# firestore.rules e o project id) e ficam versionados de proposito.
 lib/firebase_options_real.dart
 google-services.json
 GoogleService-Info.plist
-firebase.json
-.firebaserc
 
 # Misc
 .DS_Store
