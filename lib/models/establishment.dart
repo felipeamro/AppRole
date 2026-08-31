@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Tipo de estabelecimento.
+///
+/// NOTA: hoje so existem `balada` e `restaurante`, mas ha planos de
+/// adicionar um terceiro tipo para locais hibridos (ex: bar com musica ao
+/// vivo). Por isso, todo lugar que precisa de um rotulo/cor por tipo usa um
+/// `switch` exaustivo sobre este enum (aqui e em establishment_map_marker.dart)
+/// em vez de comparacoes booleanas com `== EstablishmentType.balada` - assim,
+/// adicionar um novo valor faz o analisador apontar exatamente onde
+/// atualizar, em vez de cair silenciosamente no caso "restaurante".
 enum EstablishmentType {
   balada,
   restaurante;
@@ -11,6 +19,11 @@ enum EstablishmentType {
       orElse: () => EstablishmentType.restaurante,
     );
   }
+
+  String get label => switch (this) {
+    EstablishmentType.balada => 'Balada',
+    EstablishmentType.restaurante => 'Restaurante',
+  };
 }
 
 /// Documento da colecao `establishments`.
