@@ -21,13 +21,19 @@ class EstablishmentService {
 
   /// Estabelecimentos de um bairro, usados para popular os pins do mapa.
   Stream<List<Establishment>> watchByBairro(String bairro) {
+    // TODO(temporario): remover apos diagnosticar o bug de pins que nao
+    // aparecem no mapa (ver conversa sobre o Liverpool Bar).
+    debugPrint(
+      '[EstablishmentService.watchByBairro] filtro="[$bairro]" '
+      'length=${bairro.length} codeUnits=${bairro.codeUnits}',
+    );
+    _debugDumpAllRaw();
+
     return _collection
         .where('bairro', isEqualTo: bairro)
         .snapshots()
         .map((s) {
           final establishments = s.docs.map(Establishment.fromFirestore).toList();
-          // TODO(temporario): remover apos diagnosticar o bug de pins que nao
-          // aparecem no mapa (ver conversa sobre o Liverpool Bar).
           debugPrint(
             '[EstablishmentService.watchByBairro] bairro="$bairro" -> '
             '${establishments.length} documento(s): '
@@ -35,6 +41,33 @@ class EstablishmentService {
           );
           return establishments;
         });
+  }
+
+  /// TODO(temporario): remover junto com o log acima. Le a colecao inteira
+  /// sem nenhum filtro, para confirmar que os documentos sao visiveis pela
+  /// conexao atual (descarta problema de regras do Firestore) e para
+  /// comparar, byte a byte, o valor real salvo no campo `bairro` de cada
+  /// documento com a string usada no filtro da query.
+  Future<void> _debugDumpAllRaw() async {
+    try {
+      final snapshot = await _collection.get();
+      debugPrint(
+        '[EstablishmentService._debugDumpAllRaw] leitura sem filtro: '
+        '${snapshot.docs.length} documento(s) em "establishments"',
+      );
+      for (final doc in snapshot.docs) {
+        final rawBairro = doc.data()['bairro'];
+        final asString = rawBairro is String ? rawBairro : null;
+        debugPrint(
+          '[EstablishmentService._debugDumpAllRaw] doc ${doc.id}: '
+          'bairro="[$rawBairro]" runtimeType=${rawBairro.runtimeType} '
+          'length=${asString?.length ?? 'N/A'} '
+          'codeUnits=${asString?.codeUnits ?? 'N/A'}',
+        );
+      }
+    } catch (e) {
+      debugPrint('[EstablishmentService._debugDumpAllRaw] ERRO ao ler sem filtro: $e');
+    }
   }
 
   Stream<Establishment?> watchById(String id) {
