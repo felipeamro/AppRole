@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -40,18 +38,23 @@ class EstablishmentService {
         .where('bairro', isEqualTo: bairro)
         .snapshots()
         // Erros do Firestore (ex: "permission-denied") nao passam pelo
-        // .map() abaixo - sem este transform eles seguiam direto para quem
-        // escuta a stream sem nenhum log nosso. Aqui logamos e repassamos o
-        // erro adiante (nao o engolimos), entao o card vermelho de erro no
-        // Mapa continua aparecendo normalmente.
-        .transform(
-          StreamTransformer.fromHandlers(
-            handleError: (Object error, StackTrace stackTrace, EventSink sink) {
-              debugPrint('[EstablishmentService.watchByBairro] ERRO na stream do Firestore: $error');
-              sink.addError(error, stackTrace);
-            },
-          ),
-        )
+        // .map() abaixo. handleError() por padrao ENGOLE o erro se o
+        // callback nao relancar - por isso o throwWithStackTrace explicito,
+        // preservando o stack trace original, para o card de erro no Mapa
+        // continuar aparecendo.
+        //
+        // NOTA: a tentativa anterior usava StreamTransformer.fromHandlers()
+        // sem parametros de tipo explicitos, que o Dart inferia como
+        // StreamTransformer<dynamic, dynamic> - isso corrompia o tipo da
+        // stream de forma diferente em Web (dart2js) e nativo, causando
+        // "type 'List<dynamic>' is not a subtype of type
+        // 'List<Establishment>'" so na Web. handleError() nao tem esse
+        // problema porque preserva o tipo original da stream (Stream<T> ->
+        // Stream<T>, sem precisar inferir um tipo novo).
+        .handleError((Object error, StackTrace stackTrace) {
+          debugPrint('[EstablishmentService.watchByBairro] ERRO na stream do Firestore: $error');
+          Error.throwWithStackTrace(error, stackTrace);
+        })
         .map((s) {
           final establishments = s.docs.map(Establishment.fromFirestore).toList();
           debugPrint(
