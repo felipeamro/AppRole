@@ -1,0 +1,67 @@
+rules_version = '2';
+
+// Regras do Firestore para o iVibe.
+//
+// Modelo: conteudo crowdsourced (estabelecimentos, reports, rotas, feed) e
+// de leitura publica, pois o objetivo do app e ser navegavel sem friccao.
+// Escritas exigem autenticacao (o app usa login anonimo automatico via
+// AuthService.ensureSignedIn antes de qualquer report/cadastro).
+//
+// Limitacao conhecida: a flag `verified` de um estabelecimento e hoje
+// atualizada pelo proprio app (EstablishmentService.confirmExistence) apos
+// contar as confirmacoes na subcolecao `confirmations`. Estas regras nao
+// impedem um cliente autenticado de chamar update({verified: true})
+// diretamente sem passar pelas 15 confirmacoes - enforcement completo dessa
+// regra exigiria uma Cloud Function validando a contagem no servidor.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /establishments/{establishmentId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null;
+      allow delete: if false;
+
+      match /confirmations/{userId} {
+        allow read: if true;
+        // Cada usuario so pode escrever seu proprio documento de confirmacao
+        // (id = uid), o que garante 1 confirmacao por pessoa por local.
+        allow create, update: if request.auth != null && request.auth.uid == userId;
+        allow delete: if false;
+      }
+    }
+
+    match /reports/{reportId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      // Necessario para o botao de confirmar report (incrementa `confirmations`).
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /routes/{routeId} {
+      allow read: if true;
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /routeReports/{routeReportId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    match /newsFeed/{newsId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      // Necessario para o botao de upvote.
+      allow update: if request.auth != null;
+      allow delete: if false;
+    }
+  }
+}
