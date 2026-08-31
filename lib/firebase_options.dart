@@ -38,29 +38,29 @@ class DefaultFirebaseOptions {
 
   // TODO: substitua todos os valores 'YOUR_...' pelas credenciais reais
   // geradas pelo `flutterfire configure` (ou pelo console do Firebase).
+
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY',
-    appId: 'YOUR_WEB_APP_ID',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyAVOcCHrHQ3vKOdbp9nh7NDBo6ngMz0bFg',
+    appId: '1:67779390945:web:fcdbe3c290e185cdc5b6a0',
+    messagingSenderId: '67779390945',
+    projectId: 'ivibe-app',
+    authDomain: 'ivibe-app.firebaseapp.com',
+    storageBucket: 'ivibe-app.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
+    apiKey: 'AIzaSyCh81Vqppjy8UhbhloCNPluMZDwuXoqNRQ',
+    appId: '1:67779390945:android:0ad46829ec5e9b29c5b6a0',
+    messagingSenderId: '67779390945',
+    projectId: 'ivibe-app',
+    storageBucket: 'ivibe-app.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-    iosBundleId: 'com.example.ivibe',
+    apiKey: 'AIzaSyBIKxX0JllDrpH6HJkC9GFGOHNxGNbbRrk',
+    appId: '1:67779390945:ios:fb2184d55b0c5ed3c5b6a0',
+    messagingSenderId: '67779390945',
+    projectId: 'ivibe-app',
+    storageBucket: 'ivibe-app.firebasestorage.app',
+    iosBundleId: 'com.ivibe.app.ivibe',
   );
 }
