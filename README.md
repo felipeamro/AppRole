@@ -42,24 +42,19 @@ Cada coleção tem um model em `lib/models/` e um service correspondente em
 ## Setup (Firebase ainda não conectado)
 
 Por segurança, nenhuma credencial real do Firebase está neste repositório.
-As pastas de plataforma (`android/`, `ios/`, `web/`) também não foram
-geradas ainda. Para colocar o app para rodar de verdade:
+As pastas de plataforma (`android/`, `ios/`, `web/`) já foram geradas com
+`flutter create .`, mas os placeholders de API key seguem sem valores reais.
+Para colocar o app para rodar de verdade:
 
-1. **Gerar as pastas de plataforma** (uma vez, não sobrescreve `lib/` nem
-   `pubspec.yaml` existentes):
-   ```
-   flutter create .
-   ```
-
-2. **Instalar dependências:**
+1. **Instalar dependências:**
    ```
    flutter pub get
    ```
 
-3. **Criar o projeto no [Firebase Console](https://console.firebase.google.com/)**
+2. **Criar o projeto no [Firebase Console](https://console.firebase.google.com/)**
    e habilitar Firestore + Authentication (método Anônimo).
 
-4. **Gerar as credenciais reais** com o FlutterFire CLI:
+3. **Gerar as credenciais reais** com o FlutterFire CLI:
    ```
    dart pub global activate flutterfire_cli
    flutterfire configure
@@ -67,16 +62,18 @@ geradas ainda. Para colocar o app para rodar de verdade:
    Isso substitui `lib/firebase_options.dart` (hoje só com placeholders)
    pelo arquivo real do seu projeto.
 
-5. **Descomentar a inicialização do Firebase** em `lib/main.dart` (as linhas
+4. **Descomentar a inicialização do Firebase** em `lib/main.dart` (as linhas
    de import e a chamada `Firebase.initializeApp(...)` estão comentadas de
    propósito).
 
-6. **Configurar o Google Maps:**
-   - Android: adicionar a API key em `android/app/src/main/AndroidManifest.xml`
+5. **Configurar o Google Maps** substituindo `YOUR_GOOGLE_MAPS_API_KEY` pela
+   chave real nos dois arquivos onde já está deixado como placeholder:
+   - Android: `android/app/src/main/AndroidManifest.xml`
      (`com.google.android.geo.API_KEY`).
-   - iOS: adicionar a API key em `ios/Runner/AppDelegate.swift`.
+   - iOS: `ios/Runner/AppDelegate.swift` (`GMSServices.provideAPIKey(...)`) —
+     também é preciso rodar `pod install` dentro de `ios/` (requer macOS/Xcode).
 
-7. **Rodar o app:**
+6. **Rodar o app:**
    ```
    flutter run
    ```

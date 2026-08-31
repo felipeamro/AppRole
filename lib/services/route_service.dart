@@ -6,10 +6,11 @@ import 'firestore_paths.dart';
 
 /// Operacoes sobre as colecoes `routes` e `routeReports`.
 class RouteService {
-  RouteService({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  RouteService({FirebaseFirestore? firestore}) : _injectedFirestore = firestore;
 
-  final FirebaseFirestore _firestore;
+  final FirebaseFirestore? _injectedFirestore;
+
+  FirebaseFirestore get _firestore => _injectedFirestore ?? FirebaseFirestore.instance;
 
   CollectionReference<Map<String, dynamic>> get _routes =>
       _firestore.collection(FirestorePaths.routes);

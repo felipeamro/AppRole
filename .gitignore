@@ -4,6 +4,8 @@
 .pub-cache/
 .pub/
 build/
+.flutter-plugins
+.flutter-plugins-dependencies
 *.lock
 !pubspec.lock
 
@@ -12,13 +14,12 @@ build/
 .vscode/
 *.iml
 
-# Platform folders (generated with `flutter create .`)
-/android/
-/ios/
-/web/
-/linux/
-/macos/
-/windows/
+# Android
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/local.properties
+android/key.properties
 
 # Firebase (nunca versionar credenciais reais)
 lib/firebase_options_real.dart

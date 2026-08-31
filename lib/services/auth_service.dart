@@ -5,10 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 /// O iVibe usa login anonimo para permitir que qualquer pessoa contribua com
 /// reports sem fricção, atribuindo um `uid` estavel a cada usuario.
 class AuthService {
-  AuthService({FirebaseAuth? firebaseAuth})
-    : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  AuthService({FirebaseAuth? firebaseAuth}) : _injectedAuth = firebaseAuth;
 
-  final FirebaseAuth _firebaseAuth;
+  final FirebaseAuth? _injectedAuth;
+
+  // Acesso preguiçoso: so toca o Firebase quando o service e realmente
+  // usado, nao na construcao (util enquanto o Firebase ainda nao foi
+  // inicializado no app).
+  FirebaseAuth get _firebaseAuth => _injectedAuth ?? FirebaseAuth.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
