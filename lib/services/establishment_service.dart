@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -29,13 +31,27 @@ class EstablishmentService {
     );
     debugPrint(
       '[EstablishmentService.watchByBairro] projectId=${_firestore.app.options.projectId} '
-      'databaseId=${_firestore.databaseId} appName=${_firestore.app.name}',
+      'databaseId=${_firestore.databaseId} appName=${_firestore.app.name} '
+      'collectionPath="${_collection.path}"',
     );
     _debugDumpAllRaw();
 
     return _collection
         .where('bairro', isEqualTo: bairro)
         .snapshots()
+        // Erros do Firestore (ex: "permission-denied") nao passam pelo
+        // .map() abaixo - sem este transform eles seguiam direto para quem
+        // escuta a stream sem nenhum log nosso. Aqui logamos e repassamos o
+        // erro adiante (nao o engolimos), entao o card vermelho de erro no
+        // Mapa continua aparecendo normalmente.
+        .transform(
+          StreamTransformer.fromHandlers(
+            handleError: (Object error, StackTrace stackTrace, EventSink sink) {
+              debugPrint('[EstablishmentService.watchByBairro] ERRO na stream do Firestore: $error');
+              sink.addError(error, stackTrace);
+            },
+          ),
+        )
         .map((s) {
           final establishments = s.docs.map(Establishment.fromFirestore).toList();
           debugPrint(
@@ -56,8 +72,8 @@ class EstablishmentService {
     try {
       final snapshot = await _collection.get();
       debugPrint(
-        '[EstablishmentService._debugDumpAllRaw] leitura sem filtro: '
-        '${snapshot.docs.length} documento(s) em "establishments"',
+        '[EstablishmentService._debugDumpAllRaw] leitura sem filtro em '
+        '"${_collection.path}": ${snapshot.docs.length} documento(s)',
       );
       for (final doc in snapshot.docs) {
         final rawBairro = doc.data()['bairro'];
