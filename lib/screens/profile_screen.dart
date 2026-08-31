@@ -4,6 +4,7 @@ import '../models/app_user.dart';
 import '../services/auth_service.dart';
 import '../services/user_service.dart';
 import '../widgets/points_badges_summary.dart';
+import 'onboarding_screen.dart';
 
 /// Perfil do usuario: pontos acumulados, badges conquistadas e bairro
 /// preferido.
@@ -17,6 +18,15 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _authService = AuthService();
   final _userService = UserService();
+
+  void _trocarBairro(String? bairroAtual) {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (_) => OnboardingScreen(currentBairro: bairroAtual),
+      ),
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +70,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               if (user.bairroPreferido != null)
                                 Text('Bairro: ${user.bairroPreferido}'),
+                              TextButton.icon(
+                                onPressed: () => _trocarBairro(user.bairroPreferido),
+                                icon: const Icon(Icons.sync_alt, size: 18),
+                                label: const Text('Trocar bairro'),
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  alignment: Alignment.centerLeft,
+                                ),
+                              ),
                             ],
                           ),
                         ],
