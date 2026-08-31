@@ -27,6 +27,10 @@ class EstablishmentService {
       '[EstablishmentService.watchByBairro] filtro="[$bairro]" '
       'length=${bairro.length} codeUnits=${bairro.codeUnits}',
     );
+    debugPrint(
+      '[EstablishmentService.watchByBairro] projectId=${_firestore.app.options.projectId} '
+      'databaseId=${_firestore.databaseId} appName=${_firestore.app.name}',
+    );
     _debugDumpAllRaw();
 
     return _collection
